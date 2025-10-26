@@ -2,6 +2,7 @@ import { Devvit } from '@devvit/public-api';
 import { SplashScreen } from './components/SplashScreen.js';
 import { GameScreen } from './components/GameScreen.js';
 import { LeaderboardScreen } from './components/LeaderboardScreen.js';
+import { isValidWord, getExampleWords } from './utils/wordValidator.js';
 
 /** @jsx Devvit.createElement */
 /** @jsxFrag Devvit.Fragment */
@@ -61,8 +62,13 @@ Devvit.addCustomPostType({
         return;
       }
 
-      // Note: Dictionary validation removed for now
-      // In production, you could add word validation using an allowlist
+      // Validate word against common words list
+      if (!isValidWord(normalizedWord)) {
+        const examples = getExampleWords(requiredLetter);
+        const suggestion = examples.length > 0 ? ` Try: ${examples.slice(0, 3).join(', ')}` : '';
+        setErrorMessage(`Not a recognized word!${suggestion}`);
+        return;
+      }
 
       // Check if word was recently used
       const recentWords = await redis.zRange('recent_words', 0, 49);
