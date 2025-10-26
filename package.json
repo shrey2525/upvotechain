@@ -1,0 +1,32 @@
+{
+  "name": "upvotechain",
+  "version": "0.0.0",
+  "description": "A massively multiplayer word chain game for Reddit  build the longest chain together!",
+  "main": "src/main.tsx",
+  "scripts": {
+    "devvit": "devvit",
+    "dev": "devvit playtest",
+    "playtest": "devvit playtest",
+    "upload": "devvit upload",
+    "publish": "devvit publish"
+  },
+  "keywords": [
+    "reddit",
+    "devvit",
+    "game",
+    "multiplayer",
+    "community"
+  ],
+  "author": "Shrey Chaturvedi",
+  "license": "BSD-3-Clause",
+  "devDependencies": {
+    "@devvit/public-api": "0.12.1",
+    "@devvit/protos": "0.12.1",
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "react": "^18.2.0"
+  },
+  "type": "module",
+  "private": true
+}

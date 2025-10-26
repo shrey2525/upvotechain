@@ -1,0 +1,25 @@
+name: upvotechain
+version: 1.0.0
+description: >-
+  A massively multiplayer word chain game where redditors build the longest word
+  chain together!
+build:
+  entry: src/main.tsx
+  outputDirectory: dist
+settings:
+  - name: roundDuration
+    type: number
+    default: 3600
+    description: Duration of each game round in seconds (default 1 hour)
+  - name: minWordLength
+    type: number
+    default: 3
+    description: Minimum word length allowed
+capabilities:
+  - posts
+  - redis
+  - http-fetch
+  - user-media
+http-fetch:
+  allow:
+    - https://api.dictionaryapi.dev/*

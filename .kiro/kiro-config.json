@@ -1,0 +1,53 @@
+{
+  "project": {
+    "name": "reddit-word-chain",
+    "description": "Massively multiplayer word chain game for Reddit",
+    "version": "1.0.0",
+    "platform": "devvit-web"
+  },
+  "specs": {
+    "location": ".kiro/specs",
+    "files": [
+      "game-mechanics.md",
+      "ui-components.md"
+    ]
+  },
+  "hooks": {
+    "location": ".kiro/hooks",
+    "pre-commit": ".kiro/hooks/pre-commit.sh",
+    "post-build": ".kiro/hooks/post-build.sh"
+  },
+  "steering": {
+    "location": ".kiro/steering",
+    "primary": "development-guide.md"
+  },
+  "ai_context": {
+    "tech_stack": [
+      "TypeScript",
+      "React (JSX)",
+      "Devvit Web API",
+      "Redis"
+    ],
+    "key_patterns": [
+      "Component-based architecture",
+      "State management with hooks",
+      "Redis for persistence",
+      "External API integration (Dictionary)"
+    ],
+    "code_style": {
+      "indentation": 2,
+      "quotes": "single",
+      "semicolons": true,
+      "typescript": "strict"
+    }
+  },
+  "development_workflow": {
+    "steps": [
+      "1. Read relevant specs before coding",
+      "2. Implement following component patterns",
+      "3. Test locally with npm run dev",
+      "4. Hooks run automatically on commit/build",
+      "5. Review steering docs for best practices"
+    ]
+  }
+}
