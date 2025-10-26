@@ -3,6 +3,7 @@ import { SplashScreen } from './components/SplashScreen.js';
 import { GameScreen } from './components/GameScreen.js';
 import { LeaderboardScreen } from './components/LeaderboardScreen.js';
 import { isValidWord, getExampleWords } from './utils/wordValidator.js';
+import { checkAchievements, getNewAchievements, type PlayerStats } from './utils/achievements.js';
 
 /** @jsx Devvit.createElement */
 /** @jsxFrag Devvit.Fragment */
@@ -34,6 +35,32 @@ Devvit.addCustomPostType({
     const [leaderboardData, setLeaderboardData] = context.useState<Array<{ username: string; score: number }>>([]);
     const [leaderboardLoading, setLeaderboardLoading] = context.useState(false);
     const [leaderboardLoaded, setLeaderboardLoaded] = context.useState(false);
+    const [currentStreak, setCurrentStreak] = context.useState(0);
+    const [unlockedAchievements, setUnlockedAchievements] = context.useState<string[]>([]);
+
+    // Auto-update timer every second
+    context.useInterval(async () => {
+      if (!gameActive) return;
+
+      const redis = context.redis;
+      const endTimeStr = await redis.get('round_end_time');
+
+      if (endTimeStr) {
+        const endTime = parseInt(endTimeStr);
+        const remaining = Math.max(0, Math.floor((endTime - Date.now()) / 1000));
+        setTimeRemaining(remaining);
+
+        // Auto-end round when time expires
+        if (remaining === 0 && gameActive) {
+          await redis.set('game_active', 'false');
+          setGameActive(false);
+          context.ui.showToast({
+            text: `Round ended! Final chain: ${chainLength} words`,
+            appearance: 'neutral',
+          });
+        }
+      }
+    }, 1000); // Update every second
 
     // Submit word handler
     const submitWord = async (word: string) => {
@@ -46,6 +73,7 @@ Devvit.addCustomPostType({
 
       if (normalizedWord.length < minLength) {
         setErrorMessage(`Word must be at least ${minLength} letters!`);
+        setCurrentStreak(0); // Reset streak on error
         return;
       }
 
@@ -53,12 +81,14 @@ Devvit.addCustomPostType({
       const requiredLetter = currentWord.slice(-1).toLowerCase();
       if (!normalizedWord.startsWith(requiredLetter)) {
         setErrorMessage(`Word must start with "${requiredLetter.toUpperCase()}"!`);
+        setCurrentStreak(0); // Reset streak on error
         return;
       }
 
       // Check if word contains only letters
       if (!/^[a-z]+$/.test(normalizedWord)) {
         setErrorMessage('Word must contain only letters!');
+        setCurrentStreak(0); // Reset streak on error
         return;
       }
 
@@ -67,6 +97,7 @@ Devvit.addCustomPostType({
         const examples = getExampleWords(requiredLetter);
         const suggestion = examples.length > 0 ? ` Try: ${examples.slice(0, 3).join(', ')}` : '';
         setErrorMessage(`Not a recognized word!${suggestion}`);
+        setCurrentStreak(0); // Reset streak on error
         return;
       }
 
@@ -74,6 +105,7 @@ Devvit.addCustomPostType({
       const recentWords = await redis.zRange('recent_words', 0, 49);
       if (recentWords.some(w => w.member === normalizedWord)) {
         setErrorMessage('Word was used recently! Try another.');
+        setCurrentStreak(0); // Reset streak on error
         return;
       }
 
@@ -103,6 +135,45 @@ Devvit.addCustomPostType({
         score: Date.now(),
       });
 
+      // Update streak
+      const newStreak = currentStreak + 1;
+      setCurrentStreak(newStreak);
+
+      // Check for achievements
+      const totalWords = await redis.get(`player:${username}:totalWords`) || '0';
+      const longestStreak = await redis.get(`player:${username}:longestStreak`) || '0';
+      const roundsPlayed = await redis.get(`player:${username}:roundsPlayed`) || '0';
+
+      const stats: PlayerStats = {
+        totalWords: parseInt(totalWords) + 1,
+        currentStreak: newStreak,
+        longestStreak: Math.max(newStreak, parseInt(longestStreak)),
+        totalScore: newScore,
+        roundsPlayed: parseInt(roundsPlayed),
+        longestChain: Math.max(newChainLength, chainLength),
+        perfectRounds: 0,
+      };
+
+      // Save updated stats
+      await redis.set(`player:${username}:totalWords`, stats.totalWords.toString());
+      await redis.set(`player:${username}:longestStreak`, stats.longestStreak.toString());
+      await redis.set(`player:${username}:longestChain`, stats.longestChain.toString());
+
+      // Check for new achievements
+      const newAchievements = getNewAchievements(unlockedAchievements, stats);
+      if (newAchievements.length > 0) {
+        const newUnlocked = [...unlockedAchievements, ...newAchievements.map(a => a.id)];
+        setUnlockedAchievements(newUnlocked);
+        await redis.set(`player:${username}:achievements`, JSON.stringify(newUnlocked));
+
+        // Show achievement toast
+        const achievement = newAchievements[0];
+        context.ui.showToast({
+          text: `${achievement.icon} Achievement: ${achievement.title}!`,
+          appearance: 'success',
+        });
+      }
+
       // Update local state
       setCurrentWord(normalizedWord);
       setChainLength(newChainLength);
@@ -110,7 +181,7 @@ Devvit.addCustomPostType({
       setLastPlayer(username);
 
       context.ui.showToast({
-        text: `Great! Chain is now ${newChainLength} words long!`,
+        text: `Great! Chain is now ${newChainLength} words long! Streak: ${newStreak} 🔥`,
         appearance: 'success',
       });
     };
