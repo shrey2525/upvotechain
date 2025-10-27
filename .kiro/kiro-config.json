@@ -9,7 +9,8 @@
     "location": ".kiro/specs",
     "files": [
       "game-mechanics.md",
-      "ui-components.md"
+      "ui-components.md",
+      "achievements.md"
     ]
   },
   "hooks": {
