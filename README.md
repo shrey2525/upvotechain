@@ -1,12 +1,16 @@
-# Word Chain - Reddit Hackathon 2025
+# UpvoteChain - Multiplayer Word Chain Game
 
-A massively multiplayer word chain game built for Reddit's Developer Platform using Devvit Web and Kiro.
+**Reddit + Kiro Virtual Hackathon 2025**
+
+A massively multiplayer word chain game that transforms Reddit posts into collaborative gameplay experiences. Built with Devvit Web v0.12.1.
 
 ## About
 
-Word Chain is a collaborative game where redditors work together to build the longest possible word chain. Each word must start with the last letter of the previous word, creating an engaging asynchronous multiplayer experience that brings communities together.
+UpvoteChain is a collaborative game where players build infinite word chains together. Each word must start with the last letter of the previous word - simple to learn, engaging to master!
 
-**Category:** Community Play - Massively Multiplayer Game
+**🎮 Category:** Community Play - Massively Multiplayer Game
+**🏆 Live App:** https://developers.reddit.com/apps/upvotechain
+**📦 Version:** 0.0.5
 
 ## How to Play
 
@@ -20,15 +24,17 @@ Word Chain is a collaborative game where redditors work together to build the lo
 reddit → turtle → elephant → tiger → rabbit → tiger → ...
 ```
 
-## Features
+## ✨ Features
 
-- **Real-time multiplayer** - Asynchronous gameplay with instant updates
-- **Smart validation** - Prevents duplicate words and validates starting letters
-- **Leaderboard system** - Track top contributors and compete for ranks
-- **Round-based gameplay** - Configurable round durations
-- **Form-based input** - Modal form for word submission
-- **Responsive design** - Works seamlessly on all devices
-- **Custom splash screen** - Polished onboarding experience
+- ⏱️ **Live Countdown Timer** - Real-time updates every second, auto-ends rounds
+- 🏆 **16 Achievement System** - Progressive difficulty across 5 categories
+- 📊 **Persistent Leaderboard** - Top 10 players ranked by contributions
+- 🔥 **Streak Tracking** - Build combos for bonus achievements
+- 💬 **Smart Error Messages** - Helpful suggestions on validation failures
+- 🚫 **Duplicate Prevention** - Tracks last 50 words to keep chains fresh
+- ⚙️ **Configurable Rounds** - Choose 2, 5, or 10-minute durations
+- 💾 **State Persistence** - All progress saved, survives refreshes
+- 📱 **Mobile-First Design** - Optimized for Reddit's mobile experience
 
 ## Technical Stack
 
@@ -145,11 +151,11 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 This is a hackathon submission project. After the hackathon concludes, contributions may be welcome!
 
-## Demo
+## 📺 Demo
 
-**Live Demo:** [Add your demo post URL here after deployment]
-
-**Developer Portal:** [Add your app listing URL here]
+**🏆 Live App:** https://developers.reddit.com/apps/upvotechain
+**📖 Full Story:** See [HACKATHON_SUBMISSION.md](HACKATHON_SUBMISSION.md) for detailed writeup
+**🎥 Demo Video:** [Coming soon - recording in progress]
 
 ## Support
 

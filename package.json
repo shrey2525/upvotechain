@@ -1,6 +1,6 @@
 {
   "name": "upvotechain",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "A massively multiplayer word chain game for Reddit  build the longest chain together!",
   "main": "src/main.tsx",
   "scripts": {

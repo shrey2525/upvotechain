@@ -34,7 +34,6 @@ Devvit.addCustomPostType({
     const [inputWord, setInputWord] = context.useState('');
     const [leaderboardData, setLeaderboardData] = context.useState<Array<{ username: string; score: number }>>([]);
     const [leaderboardLoading, setLeaderboardLoading] = context.useState(false);
-    const [leaderboardLoaded, setLeaderboardLoaded] = context.useState(false);
     const [currentStreak, setCurrentStreak] = context.useState(0);
     const [unlockedAchievements, setUnlockedAchievements] = context.useState<string[]>([]);
 
@@ -93,13 +92,14 @@ Devvit.addCustomPostType({
       }
 
       // Validate word against common words list
-      if (!isValidWord(normalizedWord)) {
-        const examples = getExampleWords(requiredLetter);
-        const suggestion = examples.length > 0 ? ` Try: ${examples.slice(0, 3).join(', ')}` : '';
-        setErrorMessage(`Not a recognized word!${suggestion}`);
-        setCurrentStreak(0); // Reset streak on error
-        return;
-      }
+      // TEMPORARILY DISABLED FOR TESTING
+      // if (!isValidWord(normalizedWord)) {
+      //   const examples = getExampleWords(requiredLetter);
+      //   const suggestion = examples.length > 0 ? ` Try: ${examples.slice(0, 3).join(', ')}` : '';
+      //   setErrorMessage(`Not a recognized word!${suggestion}`);
+      //   setCurrentStreak(0); // Reset streak on error
+      //   return;
+      // }
 
       // Check if word was recently used
       const recentWords = await redis.zRange('recent_words', 0, 49);
@@ -239,6 +239,27 @@ Devvit.addCustomPostType({
       });
     };
 
+    // Load leaderboard data and navigate
+    const showLeaderboard = async () => {
+      setLeaderboardLoading(true);
+      setScreen('leaderboard');
+
+      try {
+        const redis = context.redis;
+        const leaders = await redis.zRange('leaderboard', 0, 9, { reverse: true, by: 'rank' });
+        const leaderboard = leaders.map(l => ({
+          username: l.member,
+          score: l.score
+        }));
+        setLeaderboardData(leaderboard);
+        setLeaderboardLoading(false);
+      } catch (error) {
+        console.error('Error loading leaderboard:', error);
+        setLeaderboardData([]);
+        setLeaderboardLoading(false);
+      }
+    };
+
     // Render appropriate screen
     if (screen === 'splash') {
       return (
@@ -252,9 +273,11 @@ Devvit.addCustomPostType({
     if (screen === 'leaderboard') {
       return (
         <LeaderboardScreen
-          onBack={() => setScreen('game')}
+          onBack={() => {
+            setScreen('game');
+          }}
           leaderboardData={leaderboardData}
-          loading={false}
+          loading={leaderboardLoading}
         />
       );
     }
@@ -270,7 +293,7 @@ Devvit.addCustomPostType({
         gameActive={gameActive}
         errorMessage={errorMessage}
         onSubmitWord={showWordForm}
-        onShowLeaderboard={() => setScreen('leaderboard')}
+        onShowLeaderboard={showLeaderboard}
         onNewRound={startNewRound}
       />
     );

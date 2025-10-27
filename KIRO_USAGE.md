@@ -317,9 +317,9 @@ The patterns we established are reusable across any software project and particu
 
 ## Contact & Repository
 
-- **Developer**: Shrey Chaturvedi (Sansy)
-- **Repository**: https://github.com/yourusername/reddit-word-chain _(Update this URL after creating your GitHub repository)_
+- **Developer**: Shrey Chaturvedi 
+- **Repository**: https://github.com/shrey2525/upvotechain 
 - **Demo Post**: _(Add your Reddit post URL here after uploading to Reddit)_
-- **App Listing**: _(Add your developer.reddit.com app listing URL here)_
+- **App Listing**: https://www.reddit.com/r/upvotechain_dev/?playtest=upvotechain
 
 This project serves as a reference implementation for Kiro-enhanced development workflows.
