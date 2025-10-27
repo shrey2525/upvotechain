@@ -155,7 +155,7 @@ This is a hackathon submission project. After the hackathon concludes, contribut
 
 **🏆 Live App:** https://developers.reddit.com/apps/upvotechain
 **📖 Full Story:** See [HACKATHON_SUBMISSION.md](HACKATHON_SUBMISSION.md) for detailed writeup
-**🎥 Demo Video:** [Coming soon - recording in progress]
+**🎥 Demo Video:** https://youtu.be/FGiE4DRzSXU
 
 ## Support
 
